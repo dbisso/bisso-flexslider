@@ -50,7 +50,7 @@ class BissoFlexSlider {
 		wp_enqueue_script( 'jquery-flexslider', plugins_url( 'lib/flexslider/jquery.flexslider-min.js', __FILE__ ), array( 'jquery' ), 2.1, true );
 		wp_enqueue_style( 'jquery-flexslider-style', plugins_url( 'lib/flexslider/flexslider.css', __FILE__ ), null, 2.1 );
 
-		wp_localize_script( 'jquery-flexslider', 'bissoFlexsliderSettings', self::$settings );
+		wp_localize_script( 'jquery-flexslider', 'bissoFlexsliderSettings', self::get_post_settings() );
 	}
 
 	function action_add_meta_boxes () {
@@ -143,6 +143,13 @@ jQuery('document').ready( function($){
 	$('.flexslider').flexslider(bissoFlexsliderSettings.flexslider_settings);
 })
 		</script>";
+	}
+
+	function filter_the_content ( $content ) {
+		$post_settings = self::get_post_settings();
+		if ( $post_settings['enable'] ) return  $content . do_shortcode( '[bisso-flexslider]' );
+
+		return $content;
 	}
 
 }
