@@ -68,9 +68,7 @@ class BissoFlexSlider {
 			// 'post_status'		=>	'publish'
 		) );
 
-		// var_dump($attachments);
-
-		$content  = '<div class="flexslider"><ul class="slides">';
+		$content  = '<div class="' . implode( ' ', apply_filters( 'bisso_flexslider_class', array( 'flexslider' ))) . '"><ul class="slides">';
 
 		foreach ($attachments as $key => $attachment) {
 			$content .= '<li>' . wp_get_attachment_image( $attachment->ID,  'large', false ) . '</li>';
