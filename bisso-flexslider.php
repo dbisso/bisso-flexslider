@@ -33,15 +33,24 @@ Author URI: http://danisadesigner.com/
 class BissoFlexSlider {
 	static $_hooker;
 	static $wp_hook_prefix;
+	static $settings = array();
 
 	function bootstrap() {
 		self::$wp_hook_prefix = 'bisso-flexslider';
 		self::$_hooker = new Bisso_Hooker( __CLASS__, 'bisso-flexslider' );
+		self::$settings = wp_parse_args( get_option( 'bisso_flexslider_options', array() ),
+			array(
+				'flexslider_settings' => array(
+					'animation' => 'slide'
+				)
+			) );
 	}
 
 	function action_wp_enqueue_scripts() {
 		wp_enqueue_script( 'jquery-flexslider', plugins_url( 'lib/flexslider/jquery.flexslider-min.js', __FILE__ ), array( 'jquery' ), 2.1, true );
 		wp_enqueue_style( 'jquery-flexslider-style', plugins_url( 'lib/flexslider/flexslider.css', __FILE__ ), null, 2.1 );
+
+		wp_localize_script( 'jquery-flexslider', 'bissoFlexsliderSettings', self::$settings );
 	}
 
 	function shortcode_bisso_flexslider( $atts, $content = '', $tag ) {
@@ -71,7 +80,9 @@ class BissoFlexSlider {
 		$content  = '<div class="' . implode( ' ', apply_filters( 'bisso_flexslider_class', array( 'flexslider' ))) . '"><ul class="slides">';
 
 		foreach ($attachments as $key => $attachment) {
-			$content .= '<li>' . wp_get_attachment_image( $attachment->ID,  'large', false ) . '</li>';
+
+			$caption = !empty( $attachment->post_excerpt ) ? "<p class='flex-caption'>{$attachment->post_excerpt}</p>" : '';
+			$content .= '<li>' . wp_get_attachment_image( $attachment->ID,  'large', false ) . $caption . '</li>';
 		}
 
 		$content .= '</ul></div>';
@@ -82,7 +93,7 @@ class BissoFlexSlider {
 	function action_wp_head ( ) {
 		echo "<script type='text/javascript'>
 jQuery('document').ready( function($){
-	$('.flexslider').flexslider();
+	$('.flexslider').flexslider(bissoFlexsliderSettings.flexslider_settings);
 })
 		</script>";
 	}
