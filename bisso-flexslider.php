@@ -53,6 +53,53 @@ class BissoFlexSlider {
 		wp_localize_script( 'jquery-flexslider', 'bissoFlexsliderSettings', self::$settings );
 	}
 
+	function action_add_meta_boxes () {
+		add_meta_box( 'bisso-flexslider-options', __( 'Slideshow Options', 'bisso-flexslider' ), array( __CLASS__, 'meta_box_render' ), null, $context = 'advanced', $priority = 'default', null );
+	}
+
+	function meta_box_render() {
+		$post_settings = self::get_post_settings();
+?><p class='meta-options'>
+		<label for="bisso_flexslider_enable" class="selectit"><input name="bisso_flexslider[enable]" <?php checked( $post_settings['enable'], 'true' ) ?> type="checkbox" id="bisso_flexslider_enable" value="true"> Show slideshow of gallery images.</label>
+	</p>
+<?php
+	}
+
+	function action_save_post ( $post_id ) {
+		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE )
+			return;
+
+		// if ( !wp_verify_nonce( $_POST['myplugin_noncename'], plugin_basename( __FILE__ ) ) )
+			// return;
+
+		// Check permissions
+		if ( 'page' == $_POST['post_type'] ) {
+			if ( !current_user_can( 'edit_page', $post_id ) )
+				return;
+		} else {
+			if ( !current_user_can( 'edit_post', $post_id ) )
+				return;
+		}
+
+		$data = $_POST['bisso_flexslider'];
+		// TODO: Validate and sanitize
+
+		update_post_meta( $post_id, 'bisso_flexslider_options', $data );
+	}
+
+	/**
+	 * Gets post level plugin settings, falling back to sitewide defaults
+	 * @return array Post level settings
+	 */
+	function get_post_settings() {
+		global $post;
+
+		$post_settings  = get_post_meta($post->ID, 'bisso_flexslider_options', true);
+
+		return wp_parse_args( $post_settings, self::$settings );
+	}
+
+
 	function shortcode_bisso_flexslider( $atts, $content = '', $tag ) {
 		global $post;
 
