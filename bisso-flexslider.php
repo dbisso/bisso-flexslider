@@ -160,7 +160,7 @@ class BissoFlexSlider {
 			// 'meta_value'		=>	,
 			'post_type'			=>	'attachment',
 			// 'post_mime_type'	=>	'image',
-			// 'post_parent'		=>	$id,
+			'post_parent'		=>	$id,
 			// 'post_status'		=>	'publish'
 		) );
 
@@ -186,8 +186,10 @@ jQuery('document').ready( function($){
 	}
 
 	function filter_the_content ( $content ) {
+		global $post;
+
 		$post_settings = self::get_post_settings();
-		if ( $post_settings['enable'] ) return  $content . do_shortcode( '[bisso-flexslider]' );
+		if ( $post_settings['enable'] ) return  $content . do_shortcode( '[bisso-flexslider id=' . $post->ID . ']' );
 
 		return $content;
 	}
