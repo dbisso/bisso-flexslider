@@ -34,18 +34,25 @@ class BissoFlexSlider {
 	static $_hooker;
 	static $wp_hook_prefix;
 	static $settings = array();
+	static $animation_presets = array();
 
 	function bootstrap() {
 		self::$wp_hook_prefix = 'bisso-flexslider';
 		self::$_hooker = new Bisso_Hooker( __CLASS__, 'bisso-flexslider' );
-		self::$settings = wp_parse_args( get_option( 'bisso_flexslider_options', array() ),
+		self::$settings = self::wp_parse_args_recursive( get_option( 'bisso_flexslider_options', array() ),
 			array(
+				'enable' => false,
 				'flexslider_settings' => array(
 					'animation' => 'fade',
 					'slideshow_speed' => 7000,
-					'animation_speed' => 600
+					'animation_speed' => 600,
+					'slideshow' => true
 				)
 			) );
+		self::$animation_presets = array(
+			'slide' => __( 'Slide', 'bisso-flexslider' ),
+			'fade'  => __( 'Fade', 'bisso-flexslider' )
+		);
 	}
 
 	function action_wp_enqueue_scripts() {
@@ -66,25 +73,25 @@ class BissoFlexSlider {
 	function meta_box_render() {
 		$post_settings = self::get_post_settings();
 
-		$animation_options = array(
-			'slide' => __( 'Slide', 'bisso-flexslider' ),
-			'fade'  => __( 'Fade', 'bisso-flexslider' )
-		);
-
 ?><p class='meta-options'>
-		<label for="bisso_flexslider_enable" class="selectit"><input name="bisso_flexslider[enable]" <?php checked( $post_settings['enable'], 'true' ) ?> type="checkbox" id="bisso_flexslider_enable" value="true"> Show slideshow of gallery images.</label><br />
+		<label for="bisso_flexslider_enable" class="selectit"><input name="bisso_flexslider[enable]" <?php checked( $post_settings['enable']) ?> type="checkbox" id="bisso_flexslider_enable" value="true"> Show slideshow of gallery images.</label><br />
+
+		<label for="bisso_flexslider_settings_slideshow" class="selectit"><input name="bisso_flexslider[flexslider_settings][slideshow]" <?php checked( $post_settings['flexslider_settings']['slideshow'] ) ?> type="checkbox" id="bisso_flexslider_settings_slideshow" value="true"> <?php _e( 'Automatic slideshow', 'bisso-flexslider') ?></label><br />
+
 		<label for="bisso_flexslider_settings_animation" class="selectit"><?php _e( 'Animation', 'bisso-flexslider' ) ?>
 			<select name="bisso_flexslider[flexslider_settings][animation]">
-			<?php foreach ( $animation_options as $animation_option => $label ): ?>
+			<?php foreach ( self::$animation_presets as $animation_option => $label ): ?>
 				<option  <?php selected( $post_settings['flexslider_settings']['animation'], $animation_option ) ?> type="checkbox" id="bisso_flexslider_settings_animation" value="<?php echo $animation_option ?>"><?php echo $label ?></option>
 			<?php endforeach; ?>
 			</select>
 		</label><br />
+
 		<label for="bisso_flexslider_settings_slideshow_speed">
 			<?php _e( 'Slideshow Speed', 'bisso-flexslider' ) ?>
 			<input name="bisso_flexslider[flexslider_settings][slideshow_speed]" value="<?php echo $post_settings['flexslider_settings']['slideshow_speed'] ?>" type="text" id="bisso_flexslider_settings_slideshow_speed" />
 			<span class='description'><?php _e( 'Time in milliseconds to display each image', 'bisso-flexslider' ) ?></span>
 		</label><br />
+
 		<label for="bisso_flexslider_settings_animation_speed">
 			<?php _e( 'Animation Speed', 'bisso-flexslider' ) ?>
 			<input name="bisso_flexslider[flexslider_settings][animation_speed]" value="<?php echo $post_settings['flexslider_settings']['animation_speed'] ?>" type="text" id="bisso_flexslider_settings_animation_speed" />
@@ -111,9 +118,13 @@ class BissoFlexSlider {
 				return;
 		}
 
-		$data = $_POST['bisso_flexslider'];
-		// TODO: Validate and sanitize
+		$data['enable'] = self::boolify( $_POST['bisso_flexslider']['enable'] ) ;
+		$data['flexslider_settings']['slideshow_speed'] = intval($_POST['bisso_flexslider']['flexslider_settings']['slideshow_speed']);
+		$data['flexslider_settings']['animation_speed'] = intval($_POST['bisso_flexslider']['flexslider_settings']['animation_speed']);
+		$data['flexslider_settings']['slideshow'] = self::boolify($_POST['bisso_flexslider']['flexslider_settings']['slideshow']);
+		if ( in_array( $_POST['bisso_flexslider']['flexslider_settings']['animation'], array_keys( self::$animation_presets ) ) ) $data['flexslider_settings']['animation'] = $_POST['bisso_flexslider']['flexslider_settings']['animation'];
 
+		// TODO: Validate and sanitize
 		update_post_meta( $post_id, 'bisso_flexslider_options', $data );
 	}
 
@@ -125,7 +136,6 @@ class BissoFlexSlider {
 		global $post;
 
 		$post_settings  = get_post_meta($post->ID, 'bisso_flexslider_options', true);
-
 		return self::wp_parse_args_recursive( $post_settings, self::$settings );
 	}
 
@@ -204,13 +214,13 @@ jQuery('document').ready( function($){
 
 	function wp_parse_args_recursive() {
 		$arrays = func_get_args();
-        $base = array_shift($arrays);
+        $base = array_pop($arrays);
 
         foreach ($arrays as $array) {
             reset($base); //important
             while (list($key, $value) = @each($array)) {
                 if (is_array($value) && @is_array($base[$key])) {
-                    $base[$key] = wp_parse_args($base[$key], $value);
+                    $base[$key] = self::wp_parse_args_recursive($value, $base[$key]);
                 } else {
                     $base[$key] = $value;
                 }
@@ -218,6 +228,11 @@ jQuery('document').ready( function($){
         }
 
         return $base;
+	}
+
+	function boolify( $value ) {
+		if ( empty( $value ) ) return false;
+		return !is_bool( $value ) ? 'true' === $value : $value;
 	}
 
 }
