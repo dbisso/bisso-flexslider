@@ -79,7 +79,18 @@ class BissoFlexSlider {
 				<option name="bisso_flexslider[flexslider_settings][animation][<?php echo $animation_option ?>]" <?php selected( $post_settings['flexslider_settings']['animation'], $animation_option ) ?> type="checkbox" id="bisso_flexslider_settings_animation" value="true"><?php echo $label ?></option>
 			<?php endforeach; ?>
 			</select>
-		</label>
+		</label><br />
+		<label for="bisso_flexslider_settings_slideshow_speed">
+			<?php _e( 'Slideshow Speed', 'bisso-flexslider' ) ?>
+			<input name="bisso_flexslider[flexslider_settings][slideshow_speed]" value="<?php echo $post_settings['flexslider_settings']['slideshow_speed'] ?>" type="text" id="bisso_flexslider_settings_slideshow_speed" />
+			<span class='description'><?php _e( 'Time in milliseconds to display each image', 'bisso-flexslider' ) ?></span>
+		</label><br />
+		<label for="bisso_flexslider_settings_animation_speed">
+			<?php _e( 'Animation Speed', 'bisso-flexslider' ) ?>
+			<input name="bisso_flexslider[flexslider_settings][animation_speed]" value="<?php echo $post_settings['flexslider_settings']['animation_speed'] ?>" type="text" id="bisso_flexslider_settings_animation_speed" />
+			<span class='description'><?php _e( 'Time in milliseconds it takes to change between images', 'bisso-flexslider' ) ?></span>
+		</label><br />
+
 	</p>
 <?php
 	}
