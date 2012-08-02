@@ -73,6 +73,13 @@ class BissoFlexSlider {
 
 ?><p class='meta-options'>
 		<label for="bisso_flexslider_enable" class="selectit"><input name="bisso_flexslider[enable]" <?php checked( $post_settings['enable'], 'true' ) ?> type="checkbox" id="bisso_flexslider_enable" value="true"> Show slideshow of gallery images.</label><br />
+		<label for="bisso_flexslider_settings_animation" class="selectit"><?php _e( 'Animation', 'bisso-flexslider' ) ?>
+			<select>
+			<?php foreach ( $animation_options as $animation_option => $label ): ?>
+				<option name="bisso_flexslider[flexslider_settings][animation][<?php echo $animation_option ?>]" <?php selected( $post_settings['flexslider_settings']['animation'], $animation_option ) ?> type="checkbox" id="bisso_flexslider_settings_animation" value="true"><?php echo $label ?></option>
+			<?php endforeach; ?>
+			</select>
+		</label>
 	</p>
 <?php
 	}
