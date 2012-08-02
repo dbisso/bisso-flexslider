@@ -56,14 +56,23 @@ class BissoFlexSlider {
 	}
 
 	function action_add_meta_boxes () {
-		add_meta_box( 'bisso-flexslider-options', __( 'Slideshow Options', 'bisso-flexslider' ), array( __CLASS__, 'meta_box_render' ), null, $context = 'advanced', $priority = 'default', null );
+		$post_types = get_post_types();
+
+		foreach ($post_types as $name => $post_type) {
+			if ( in_array( $name, apply_filters( 'bisso_flexslider_post_types', array( 'post', 'page' ) ) ) ) add_meta_box( 'bisso-flexslider-options', __( 'Slideshow Options', 'bisso-flexslider' ), array( __CLASS__, 'meta_box_render' ), null, $context = 'advanced', $priority = 'default', null );
+		}
 	}
 
 	function meta_box_render() {
 		$post_settings = self::get_post_settings();
 
+		$animation_options = array(
+			'slide' => __( 'Slide', 'bisso-flexslider' ),
+			'fade'  => __( 'Fade', 'bisso-flexslider' )
+		);
+
 ?><p class='meta-options'>
-		<label for="bisso_flexslider_enable" class="selectit"><input name="bisso_flexslider[enable]" <?php checked( $post_settings['enable'], 'true' ) ?> type="checkbox" id="bisso_flexslider_enable" value="true"> Show slideshow of gallery images.</label>
+		<label for="bisso_flexslider_enable" class="selectit"><input name="bisso_flexslider[enable]" <?php checked( $post_settings['enable'], 'true' ) ?> type="checkbox" id="bisso_flexslider_enable" value="true"> Show slideshow of gallery images.</label><br />
 	</p>
 <?php
 	}
