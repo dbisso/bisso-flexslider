@@ -74,9 +74,9 @@ class BissoFlexSlider {
 ?><p class='meta-options'>
 		<label for="bisso_flexslider_enable" class="selectit"><input name="bisso_flexslider[enable]" <?php checked( $post_settings['enable'], 'true' ) ?> type="checkbox" id="bisso_flexslider_enable" value="true"> Show slideshow of gallery images.</label><br />
 		<label for="bisso_flexslider_settings_animation" class="selectit"><?php _e( 'Animation', 'bisso-flexslider' ) ?>
-			<select>
+			<select name="bisso_flexslider[flexslider_settings][animation]">
 			<?php foreach ( $animation_options as $animation_option => $label ): ?>
-				<option name="bisso_flexslider[flexslider_settings][animation][<?php echo $animation_option ?>]" <?php selected( $post_settings['flexslider_settings']['animation'], $animation_option ) ?> type="checkbox" id="bisso_flexslider_settings_animation" value="true"><?php echo $label ?></option>
+				<option  <?php selected( $post_settings['flexslider_settings']['animation'], $animation_option ) ?> type="checkbox" id="bisso_flexslider_settings_animation" value="<?php echo $animation_option ?>"><?php echo $label ?></option>
 			<?php endforeach; ?>
 			</select>
 		</label><br />
@@ -126,7 +126,7 @@ class BissoFlexSlider {
 
 		$post_settings  = get_post_meta($post->ID, 'bisso_flexslider_options', true);
 
-		return wp_parse_args( $post_settings, self::$settings );
+		return self::wp_parse_args_recursive( $post_settings, self::$settings );
 	}
 
 
@@ -167,7 +167,7 @@ class BissoFlexSlider {
 		return do_shortcode( $content );
 	}
 
-	function action_wp_head ( ) {
+	function action_wp_footer ( ) {
 		echo "<script type='text/javascript'>
 jQuery('document').ready( function($){
 	$('.flexslider').flexslider(bissoFlexsliderSettings.flexsliderSettings);
@@ -184,10 +184,9 @@ jQuery('document').ready( function($){
 
 	function camelize_array( $array ) {
 		foreach ($array as $key => $value) {
-			$array[self::camelize( $key )] = is_array( $value ) ? self::camelize_array( $value ) : $value;
 			unset( $array[$key] );
+			$array[self::camelize( $key )] = is_array( $value ) ? self::camelize_array( $value ) : $value;
 		}
-
 		return $array;
 	}
 
@@ -201,6 +200,24 @@ jQuery('document').ready( function($){
 		}
 
 		return $string;
+	}
+
+	function wp_parse_args_recursive() {
+		$arrays = func_get_args();
+        $base = array_shift($arrays);
+
+        foreach ($arrays as $array) {
+            reset($base); //important
+            while (list($key, $value) = @each($array)) {
+                if (is_array($value) && @is_array($base[$key])) {
+                    $base[$key] = wp_parse_args($base[$key], $value);
+                } else {
+                    $base[$key] = $value;
+                }
+            }
+        }
+
+        return $base;
 	}
 
 }
