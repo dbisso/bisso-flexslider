@@ -41,7 +41,9 @@ class BissoFlexSlider {
 		self::$settings = wp_parse_args( get_option( 'bisso_flexslider_options', array() ),
 			array(
 				'flexslider_settings' => array(
-					'animation' => 'slide'
+					'animation' => 'fade',
+					'slideshow_speed' => 7000,
+					'animation_speed' => 600
 				)
 			) );
 	}
@@ -50,7 +52,7 @@ class BissoFlexSlider {
 		wp_enqueue_script( 'jquery-flexslider', plugins_url( 'lib/flexslider/jquery.flexslider-min.js', __FILE__ ), array( 'jquery' ), 2.1, true );
 		wp_enqueue_style( 'jquery-flexslider-style', plugins_url( 'lib/flexslider/flexslider.css', __FILE__ ), null, 2.1 );
 
-		wp_localize_script( 'jquery-flexslider', 'bissoFlexsliderSettings', self::get_post_settings() );
+		wp_localize_script( 'jquery-flexslider', 'bissoFlexsliderSettings', self::camelize_array( self::get_post_settings() ) );
 	}
 
 	function action_add_meta_boxes () {
@@ -59,6 +61,7 @@ class BissoFlexSlider {
 
 	function meta_box_render() {
 		$post_settings = self::get_post_settings();
+
 ?><p class='meta-options'>
 		<label for="bisso_flexslider_enable" class="selectit"><input name="bisso_flexslider[enable]" <?php checked( $post_settings['enable'], 'true' ) ?> type="checkbox" id="bisso_flexslider_enable" value="true"> Show slideshow of gallery images.</label>
 	</p>
@@ -140,7 +143,7 @@ class BissoFlexSlider {
 	function action_wp_head ( ) {
 		echo "<script type='text/javascript'>
 jQuery('document').ready( function($){
-	$('.flexslider').flexslider(bissoFlexsliderSettings.flexslider_settings);
+	$('.flexslider').flexslider(bissoFlexsliderSettings.flexsliderSettings);
 })
 		</script>";
 	}
@@ -150,6 +153,27 @@ jQuery('document').ready( function($){
 		if ( $post_settings['enable'] ) return  $content . do_shortcode( '[bisso-flexslider]' );
 
 		return $content;
+	}
+
+	function camelize_array( $array ) {
+		foreach ($array as $key => $value) {
+			$array[self::camelize( $key )] = is_array( $value ) ? self::camelize_array( $value ) : $value;
+			unset( $array[$key] );
+		}
+
+		return $array;
+	}
+
+	function camelize( $string, $pascalCase = false ) {
+		$string = str_replace(array('-', '_'), ' ', $string);
+		$string = ucwords($string);
+		$string = str_replace(' ', '', $string);
+
+		if (!$pascalCase) {
+			return lcfirst($string);
+		}
+
+		return $string;
 	}
 
 }
