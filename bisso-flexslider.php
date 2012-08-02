@@ -119,8 +119,8 @@ class BissoFlexSlider {
 		}
 
 		$data['enable'] = self::boolify( $_POST['bisso_flexslider']['enable'] ) ;
-		$data['flexslider_settings']['slideshow_speed'] = intval($_POST['bisso_flexslider']['flexslider_settings']['slideshow_speed']);
-		$data['flexslider_settings']['animation_speed'] = intval($_POST['bisso_flexslider']['flexslider_settings']['animation_speed']);
+		if ( !empty( $_POST['bisso_flexslider']['flexslider_settings']['slideshow_speed'] ) ) $data['flexslider_settings']['slideshow_speed'] = intval($_POST['bisso_flexslider']['flexslider_settings']['slideshow_speed']);
+		if ( !empty( $_POST['bisso_flexslider']['flexslider_settings']['animation_speed'] ) ) $data['flexslider_settings']['animation_speed'] = intval($_POST['bisso_flexslider']['flexslider_settings']['animation_speed']);
 		$data['flexslider_settings']['slideshow'] = self::boolify($_POST['bisso_flexslider']['flexslider_settings']['slideshow']);
 		if ( in_array( $_POST['bisso_flexslider']['flexslider_settings']['animation'], array_keys( self::$animation_presets ) ) ) $data['flexslider_settings']['animation'] = $_POST['bisso_flexslider']['flexslider_settings']['animation'];
 
