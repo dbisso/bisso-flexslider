@@ -166,10 +166,14 @@ class BissoFlexSlider {
 
 		$content  = '<div class="' . implode( ' ', apply_filters( 'bisso_flexslider_class', array( 'flexslider' ))) . '"><ul class="slides">';
 
+		$caption_class  = ($classes = implode( ' ', apply_filters( 'bisso_flexslider_caption_class', array( 'flex-caption' ) ) ) ) ? "class='$classes'" : '';
+
+		$slide_class  = ($classes = implode( ' ', apply_filters( 'bisso_flexslider_slide_class', array() ) ) ) ? "class='$classes'" : '';
+
 		foreach ($attachments as $key => $attachment) {
 
-			$caption = !empty( $attachment->post_excerpt ) ? "<p class='flex-caption'>{$attachment->post_excerpt}</p>" : '';
-			$content .= '<li>' . wp_get_attachment_image( $attachment->ID,  'large', false ) . $caption . '</li>';
+			$caption = !empty( $attachment->post_excerpt ) ? "<p $caption_class>{$attachment->post_excerpt}</p>" : '';
+			$content .= "<li $slide_class>" . wp_get_attachment_image( $attachment->ID,  'large', false) . $caption . '</li>';
 		}
 
 		$content .= '</ul></div>';
