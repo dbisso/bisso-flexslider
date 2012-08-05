@@ -32,13 +32,21 @@ Author URI: http://danisadesigner.com/
 
 class BissoFlexSlider {
 	static $_hooker;
-	static $wp_hook_prefix;
 	static $settings = array();
 	static $animation_presets = array();
 
-	function bootstrap() {
-		self::$wp_hook_prefix = 'bisso-flexslider';
-		self::$_hooker = new Bisso_Hooker( __CLASS__, 'bisso-flexslider' );
+	function bootstrap( $hooker = null ) {
+		try {
+		 	if ( $hooker ) {
+		 		self::$_hooker = $hooker;
+		 		self::$_hooker->hook( __CLASS__, 'bisso_flexslider' );
+		 	} else {
+		 		throw new Exception( 'Hooking class for plugin not specified.' , 1);
+		 	}
+	 	} catch ( Exception $e ) {
+	 		wp_die( plugin_basename( __FILE__ ) . ' plugin bootsrap error: ' . $e->getMessage(), plugin_basename( __FILE__ ) . ' plugin bootsrap error: ' );
+	 	}
+
 		self::$settings = self::wp_parse_args_recursive( get_option( 'bisso_flexslider_options', array() ),
 			array(
 				'enable' => false,
@@ -242,5 +250,12 @@ jQuery('document').ready( function($){
 	}
 
 }
-
-BissoFlexSlider::bootstrap();
+try {
+	if ( class_exists( 'Bisso_Hooker' ) ) {
+		BissoFlexSlider::bootstrap( new Bisso_Hooker );
+	} else {
+		throw new Exception( "Class Bisso_Hooker not found. Check that the plugin is installed.", 1 );
+	}
+} catch ( Exception $e ) {
+	wp_die( $e->getMessage(), $title = 'Plugin Exception' );
+}
