@@ -38,13 +38,16 @@ class BissoFlexSlider {
 	function bootstrap( $hooker = null ) {
 		try {
 		 	if ( $hooker ) {
-		 		self::$_hooker = $hooker;
-		 		self::$_hooker->hook( __CLASS__, 'bisso_flexslider' );
+		 		if ( !method_exists( $hooker, 'hook' ) )
+		 			throw new BadMethodCallException( 'Class ' . get_class( $hooker ) . ' has no hook() method.', 1);
+
+				self::$_hooker = $hooker;
+		 		self::$_hooker->hook( __CLASS__, '_s' );
 		 	} else {
-		 		throw new Exception( 'Hooking class for plugin not specified.' , 1);
+		 		throw new BadMethodCallException( 'Hooking class for plugin not specified.' , 1);
 		 	}
 	 	} catch ( Exception $e ) {
-	 		wp_die( plugin_basename( __FILE__ ) . ' plugin bootsrap error: ' . $e->getMessage(), plugin_basename( __FILE__ ) . ' plugin bootsrap error: ' );
+	 		wp_die( plugin_basename( __FILE__ ) . ' plugin bootstrap error: ' . $e->getMessage(), plugin_basename( __FILE__ ) . ' plugin bootstrap error: ' );
 	 	}
 
 		self::$settings = self::wp_parse_args_recursive( get_option( 'bisso_flexslider_options', array() ),
