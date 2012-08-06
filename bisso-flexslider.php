@@ -129,11 +129,13 @@ class BissoFlexSlider {
 				return;
 		}
 
+		$flexslider_settings =  $_POST['bisso_flexslider']['flexslider_settings'];
+
 		$data['enable'] = self::boolify( $_POST['bisso_flexslider']['enable'] ) ;
-		if ( !empty( $_POST['bisso_flexslider']['flexslider_settings']['slideshow_speed'] ) ) $data['flexslider_settings']['slideshow_speed'] = intval($_POST['bisso_flexslider']['flexslider_settings']['slideshow_speed']);
-		if ( !empty( $_POST['bisso_flexslider']['flexslider_settings']['animation_speed'] ) ) $data['flexslider_settings']['animation_speed'] = intval($_POST['bisso_flexslider']['flexslider_settings']['animation_speed']);
-		$data['flexslider_settings']['slideshow'] = self::boolify($_POST['bisso_flexslider']['flexslider_settings']['slideshow']);
-		if ( in_array( $_POST['bisso_flexslider']['flexslider_settings']['animation'], array_keys( self::$animation_presets ) ) ) $data['flexslider_settings']['animation'] = $_POST['bisso_flexslider']['flexslider_settings']['animation'];
+		if ( !empty( $flexslider_settings['slideshow_speed'] ) ) $data['flexslider_settings']['slideshow_speed'] = intval( $flexslider_settings['slideshow_speed'] );
+		if ( !empty( $flexslider_settings['animation_speed'] ) ) $data['flexslider_settings']['animation_speed'] = intval( $flexslider_settings['animation_speed'] );
+		$data['flexslider_settings']['slideshow'] = self::boolify( $flexslider_settings['slideshow'] );
+		if ( in_array( $flexslider_settings['animation'], array_keys( self::$animation_presets ) ) ) $data['flexslider_settings']['animation'] = $flexslider_settings['animation'];
 
 		// TODO: Validate and sanitize
 		update_post_meta( $post_id, 'bisso_flexslider_options', $data );
@@ -253,6 +255,7 @@ jQuery('document').ready( function($){
 	}
 
 }
+
 try {
 	if ( class_exists( 'Bisso_Hooker' ) ) {
 		BissoFlexSlider::bootstrap( new Bisso_Hooker );
