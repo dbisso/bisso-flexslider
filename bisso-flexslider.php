@@ -213,8 +213,16 @@ jQuery('document').ready( function($){
 
 	function camelize_array_keys( $array ) {
 		foreach ($array as $key => $value) {
+			$camelized_key = self::camelize( $key );
+
+			// We can only camelize keys if they will still be unique afterwards.
+			// But we don't want to fail on keys that remain the same after camelization
+			if ( $camelized_key !== $key && in_array( $camelized_key, array_keys( $array ) ) ) {
+				throw new InvalidArgumentException( "Camelizing this array will result in two identical keys [$camelized_key]", 1 );
+			}
+
 			unset( $array[$key] );
-			$array[self::camelize( $key )] = is_array( $value ) ? self::camelize_array_keys( $value ) : $value;
+			$array[$camelized_key] = is_array( $value ) ? self::camelize_array_keys( $value ) : $value;
 		}
 		return $array;
 	}
