@@ -34,6 +34,8 @@ class BissoFlexSlider {
 	static $_hooker;
 	static $settings = array();
 	static $animation_presets = array();
+	const OPTION_NAME = 'bisso_flexslider_options';
+	const META_NAME = 'bisso_flexslider_options';
 
 	function bootstrap( $hooker = null ) {
 		try {
@@ -50,16 +52,7 @@ class BissoFlexSlider {
 	 		wp_die( plugin_basename( __FILE__ ) . ' plugin bootstrap error: ' . $e->getMessage(), plugin_basename( __FILE__ ) . ' plugin bootstrap error: ' );
 	 	}
 
-		self::$settings = self::wp_parse_args_recursive( get_option( 'bisso_flexslider_options', array() ),
-			array(
-				'enable' => false,
-				'flexslider_settings' => array(
-					'animation' => 'fade',
-					'slideshow_speed' => 7000,
-					'animation_speed' => 600,
-					'slideshow' => true
-				)
-			) );
+		self::$settings = self::wp_parse_args_recursive( get_option( self::OPTION_NAME, array() ), self::get_settings_defaults() );
 		self::$animation_presets = array(
 			'slide' => __( 'Slide', 'bisso-flexslider' ),
 			'fade'  => __( 'Fade', 'bisso-flexslider' )
@@ -138,7 +131,7 @@ class BissoFlexSlider {
 		if ( in_array( $flexslider_settings['animation'], array_keys( self::$animation_presets ) ) ) $data['flexslider_settings']['animation'] = $flexslider_settings['animation'];
 
 		// TODO: Validate and sanitize
-		update_post_meta( $post_id, 'bisso_flexslider_options', $data );
+		update_post_meta( $post_id, self::META_NAME, $data );
 	}
 
 	/**
@@ -152,7 +145,7 @@ class BissoFlexSlider {
 			global $post;
 		}
 
-		$post_settings  = get_post_meta($post->ID, 'bisso_flexslider_options', true);
+		$post_settings  = get_post_meta($post->ID, self::META_NAME, true);
 		return self::wp_parse_args_recursive( $post_settings, self::$settings );
 	}
 
@@ -213,6 +206,18 @@ jQuery('document').ready( function($){
 		if ( $post_settings['enable'] ) return  $content . do_shortcode( '[bisso-flexslider id=' . $post->ID . ']' );
 
 		return $content;
+	}
+
+	function get_settings_defaults() {
+		return	array(
+			'enable' => false,
+			'flexslider_settings' => array(
+				'animation' => 'fade',
+				'slideshow_speed' => 7000,
+				'animation_speed' => 600,
+				'slideshow' => true
+			)
+		);
 	}
 
 	function camelize_array_keys( $array ) {
