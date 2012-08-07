@@ -70,7 +70,7 @@ class BissoFlexSlider {
 		wp_enqueue_script( 'jquery-flexslider', plugins_url( 'lib/flexslider/jquery.flexslider-min.js', __FILE__ ), array( 'jquery' ), 2.1, true );
 		wp_enqueue_style( 'jquery-flexslider-style', plugins_url( 'lib/flexslider/flexslider.css', __FILE__ ), null, 2.1 );
 
-		wp_localize_script( 'jquery-flexslider', 'bissoFlexsliderSettings', self::camelize_array( self::get_post_settings() ) );
+		wp_localize_script( 'jquery-flexslider', 'bissoFlexsliderSettings', self::camelize_array_keys( self::get_post_settings() ) );
 	}
 
 	function action_add_meta_boxes () {
@@ -211,10 +211,10 @@ jQuery('document').ready( function($){
 		return $content;
 	}
 
-	function camelize_array( $array ) {
+	function camelize_array_keys( $array ) {
 		foreach ($array as $key => $value) {
 			unset( $array[$key] );
-			$array[self::camelize( $key )] = is_array( $value ) ? self::camelize_array( $value ) : $value;
+			$array[self::camelize( $key )] = is_array( $value ) ? self::camelize_array_keys( $value ) : $value;
 		}
 		return $array;
 	}
