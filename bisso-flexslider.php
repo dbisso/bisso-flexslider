@@ -145,8 +145,12 @@ class BissoFlexSlider {
 	 * Gets post level plugin settings, falling back to sitewide defaults
 	 * @return array Post level settings
 	 */
-	function get_post_settings() {
-		global $post;
+	function get_post_settings( $post_id = null ) {
+		if ( $post_id ) {
+			$post = get_post( $post_id );
+		} else {
+			global $post;
+		}
 
 		$post_settings  = get_post_meta($post->ID, 'bisso_flexslider_options', true);
 		return self::wp_parse_args_recursive( $post_settings, self::$settings );
