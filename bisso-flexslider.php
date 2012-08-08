@@ -122,16 +122,23 @@ class BissoFlexSlider {
 				return;
 		}
 
-		$flexslider_settings =  $_POST['bisso_flexslider']['flexslider_settings'];
+		$data = self::sanitize_post_meta( $_POST['bisso_flexslider'] );
 
-		$data['enable'] = self::boolify( $_POST['bisso_flexslider']['enable'] ) ;
+		// TODO: Validate and sanitize
+		update_post_meta( $post_id, self::META_NAME, $data );
+	}
+
+	function sanitize_post_meta( $post_meta_raw ) {
+		$data = array();
+		$flexslider_settings = $post_meta_raw['flexslider_settings'];
+
+		$data['enable'] = self::boolify( $post_meta_raw['enable'] ) ;
 		if ( !empty( $flexslider_settings['slideshow_speed'] ) ) $data['flexslider_settings']['slideshow_speed'] = intval( $flexslider_settings['slideshow_speed'] );
 		if ( !empty( $flexslider_settings['animation_speed'] ) ) $data['flexslider_settings']['animation_speed'] = intval( $flexslider_settings['animation_speed'] );
 		$data['flexslider_settings']['slideshow'] = self::boolify( $flexslider_settings['slideshow'] );
 		if ( in_array( $flexslider_settings['animation'], array_keys( self::$animation_presets ) ) ) $data['flexslider_settings']['animation'] = $flexslider_settings['animation'];
 
-		// TODO: Validate and sanitize
-		update_post_meta( $post_id, self::META_NAME, $data );
+		return $data;
 	}
 
 	/**
