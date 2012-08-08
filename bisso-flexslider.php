@@ -30,7 +30,7 @@ Author URI: http://danisadesigner.com/
  * **********************************************************************
  */
 
-class BissoFlexSlider {
+class Bisso_Flexslider {
 	static $_hooker;
 	static $settings = array();
 	static $animation_presets = array();
@@ -282,7 +282,7 @@ jQuery('document').ready( function($){
 
 try {
 	if ( class_exists( 'Bisso_Hooker' ) ) {
-		BissoFlexSlider::bootstrap( new Bisso_Hooker );
+		Bisso_Flexslider::bootstrap( new Bisso_Hooker );
 	} else {
 		throw new Exception( "Class Bisso_Hooker not found. Check that the plugin is installed.", 1 );
 	}
