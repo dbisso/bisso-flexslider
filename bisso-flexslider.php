@@ -69,7 +69,7 @@ class Bisso_Flexslider {
 	function action_add_meta_boxes () {
 		$post_types = get_post_types();
 
-		foreach ($post_types as $name => $post_type) {
+		foreach ( $post_types as $name => $post_type ) {
 			if ( in_array( $name, apply_filters( 'bisso_flexslider_post_types', array( 'post', 'page' ) ) ) ) add_meta_box( 'bisso-flexslider-options', __( 'Slideshow Options', 'bisso-flexslider' ), array( __CLASS__, 'meta_box_render' ), null, $context = 'advanced', $priority = 'default', null );
 		}
 	}
@@ -187,8 +187,7 @@ class Bisso_Flexslider {
 
 		$slide_class  = ($classes = implode( ' ', apply_filters( 'bisso_flexslider_slide_class', array() ) ) ) ? "class='$classes'" : '';
 
-		foreach ($attachments as $key => $attachment) {
-
+		foreach ( $attachments as $key => $attachment ) {
 			$caption = !empty( $attachment->post_excerpt ) ? "<p $caption_class>{$attachment->post_excerpt}</p>" : '';
 			$content .= "<li $slide_class>" . wp_get_attachment_image( $attachment->ID,  'large', false) . $caption . '</li>';
 		}
@@ -253,7 +252,7 @@ jQuery('document').ready( function($){
 	}
 
 	function camelize_array_keys( $array ) {
-		foreach ($array as $key => $value) {
+		foreach ( $array as $key => $value ) {
 			$camelized_key = self::camelize( $key );
 
 			// We can only camelize keys if they will still be unique afterwards.
@@ -273,7 +272,7 @@ jQuery('document').ready( function($){
 		$string = ucwords($string);
 		$string = str_replace(' ', '', $string);
 
-		if (!$pascalCase) {
+		if ( !$pascalCase ) {
 			return lcfirst($string);
 		}
 
@@ -284,10 +283,10 @@ jQuery('document').ready( function($){
 		$arrays = func_get_args();
         $base = array_pop($arrays);
 
-        foreach ($arrays as $array) {
-            reset($base); //important
-            while (list($key, $value) = @each($array)) {
-                if (is_array($value) && @is_array($base[$key])) {
+        foreach ( $arrays as $array ) {
+            reset( $base ); //important
+            while ( list( $key, $value ) = @each( $array ) ) {
+                if ( is_array( $value ) && @is_array( $base[$key] ) ) {
                     $base[$key] = self::wp_parse_args_recursive($value, $base[$key]);
                 } else {
                     $base[$key] = $value;
