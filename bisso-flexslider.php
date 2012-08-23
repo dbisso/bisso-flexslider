@@ -115,20 +115,20 @@ class Bisso_Flexslider {
 
 		// Check permissions
 		if ( 'page' == $_POST['post_type'] ) {
-			if ( !current_user_can( 'edit_page', $post_id ) )
+			if ( !current_user_can( 'edit_page', (int) $post_id ) )
 				return;
 		} else {
-			if ( !current_user_can( 'edit_post', $post_id ) )
+			if ( !current_user_can( 'edit_post', (int) $post_id ) )
 				return;
 		}
 
-		$data = self::sanitize_post_meta( $_POST['bisso_flexslider'] );
-
-		// TODO: Validate and sanitize
-		update_post_meta( $post_id, self::META_NAME, $data );
+		if ( isset( $_POST['bisso_flexslider'] ) && is_array( $_POST['bisso_flexslider'] ) ) {
+			$data = self::sanitize_post_meta( $_POST['bisso_flexslider'] );
+			update_post_meta( (int) $post_id, self::META_NAME, $data );
+		}
 	}
 
-	function sanitize_post_meta( $post_meta_raw ) {
+	function sanitize_post_meta( array $post_meta_raw ) {
 		$data = array();
 		$flexslider_settings = $post_meta_raw['flexslider_settings'];
 
@@ -146,7 +146,7 @@ class Bisso_Flexslider {
 	 * @return array Post level settings
 	 */
 	function get_post_settings( $post_id = null ) {
-		if ( $post_id ) {
+		if ( (int) $post_id ) {
 			$post = get_post( $post_id );
 		} else {
 			global $post;
@@ -156,8 +156,7 @@ class Bisso_Flexslider {
 		return self::wp_parse_args_recursive( $post_settings, self::$settings );
 	}
 
-
-	function shortcode_bisso_flexslider( $atts, $content = '', $tag ) {
+	function shortcode_bisso_flexslider( array $atts, $content = '', $tag ) {
 		global $post;
 
 		$defaults = array(
@@ -234,13 +233,13 @@ jQuery('document').ready( function($){
 		global $post;
 
 		$post_settings = self::get_post_settings();
-		if ( $post_settings['enable'] ) return  $content . do_shortcode( '[bisso-flexslider id=' . $post->ID . ']' );
+		if ( $post_settings['enable'] ) return  (string) $content . do_shortcode( '[bisso-flexslider id=' . $post->ID . ']' );
 
-		return $content;
+		return (string) $content;
 	}
 
 	function get_settings_defaults() {
-		return	array(
+		return array(
 			'enable' => false,
 			'flexslider_settings' => array(
 				'animation' => 'fade',
@@ -251,7 +250,7 @@ jQuery('document').ready( function($){
 		);
 	}
 
-	function camelize_array_keys( $array ) {
+	function camelize_array_keys( array $array ) {
 		foreach ( $array as $key => $value ) {
 			$camelized_key = self::camelize( $key );
 
@@ -272,7 +271,7 @@ jQuery('document').ready( function($){
 		$string = ucwords($string);
 		$string = str_replace(' ', '', $string);
 
-		if ( !$pascalCase ) {
+		if ( !(boolean) $pascalCase ) {
 			return lcfirst($string);
 		}
 
@@ -308,7 +307,7 @@ try {
 	if ( class_exists( 'Bisso_Hooker' ) ) {
 		Bisso_Flexslider::bootstrap( new Bisso_Hooker );
 	} else {
-		throw new Exception( "Class Bisso_Hooker not found. Check that the plugin is installed.", 1 );
+		throw new Exception( 'Class Bisso_Hooker not found. Check that the plugin is installed.', 1 );
 	}
 } catch ( Exception $e ) {
 	wp_die( $e->getMessage(), $title = 'Plugin Exception' );
