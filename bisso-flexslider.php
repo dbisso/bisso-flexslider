@@ -233,7 +233,7 @@ jQuery('document').ready( function($){
 		global $post;
 
 		$post_settings = self::get_post_settings();
-		if ( $post_settings['enable'] ) return  (string) $content . do_shortcode( '[bisso-flexslider id=' . $post->ID . ']' );
+		if ( $post_settings['enable'] ) return (string) $content . do_shortcode( '[bisso-flexslider id=' . $post->ID . ']' );
 
 		return (string) $content;
 	}
@@ -267,12 +267,12 @@ jQuery('document').ready( function($){
 	}
 
 	function camelize( $string, $pascalCase = false ) {
-		$string = str_replace(array('-', '_'), ' ', $string);
-		$string = ucwords($string);
-		$string = str_replace(' ', '', $string);
+		$string = str_replace( array( '-', '_' ), ' ', $string );
+		$string = ucwords( $string );
+		$string = str_replace( ' ', '', $string );
 
 		if ( !(boolean) $pascalCase ) {
-			return lcfirst($string);
+			return lcfirst( $string );
 		}
 
 		return $string;
@@ -286,7 +286,7 @@ jQuery('document').ready( function($){
             reset( $base ); //important
             while ( list( $key, $value ) = @each( $array ) ) {
                 if ( is_array( $value ) && @is_array( $base[$key] ) ) {
-                    $base[$key] = self::wp_parse_args_recursive($value, $base[$key]);
+                    $base[$key] = self::wp_parse_args_recursive( $value, $base[$key] );
                 } else {
                     $base[$key] = $value;
                 }
