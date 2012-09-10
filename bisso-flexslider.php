@@ -225,6 +225,8 @@ jQuery('document').ready( function($){
 	var slider = $('.flexslider').flexslider(bissoFlexsliderSettings.flexsliderSettings).data('flexslider');
 	$(window).bind('resize', function() { fixHeight(slider) } );
 
+
+	$( '[data-flexslider=\"carousel\"]'' ).flexslider();
 });
 		</script>";
 	}
