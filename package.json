@@ -1,0 +1,7 @@
+{
+  "volo": {
+    "dependencies": {
+      "FlexSlider": "github:woothemes/FlexSlider/master"
+    }
+  }
+}
