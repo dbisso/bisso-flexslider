@@ -60,8 +60,8 @@ class Bisso_Flexslider {
 	}
 
 	function action_wp_enqueue_scripts() {
-		wp_enqueue_script( 'jquery-flexslider', plugins_url( 'lib/flexslider/jquery.flexslider-min.js', __FILE__ ), array( 'jquery' ), 2.1, true );
-		wp_enqueue_style( 'jquery-flexslider-style', plugins_url( 'lib/flexslider/flexslider.css', __FILE__ ), null, 2.1 );
+		wp_enqueue_script( 'jquery-flexslider', plugins_url( 'js/FlexSlider/jquery.flexslider-min.js', __FILE__ ), array( 'jquery' ), 2.1, true );
+		wp_enqueue_style( 'jquery-flexslider-style', plugins_url( 'js/FlexSlider/flexslider.css', __FILE__ ), null, 2.1 );
 
 		wp_localize_script( 'jquery-flexslider', 'bissoFlexsliderSettings', self::camelize_array_keys( self::get_post_settings() ) );
 	}
