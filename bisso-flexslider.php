@@ -223,7 +223,8 @@ jQuery('document').ready( function($){
 	bissoFlexsliderSettings.flexsliderSettings.start = fixHeight
 
 	var slider = $('.flexslider').flexslider(bissoFlexsliderSettings.flexsliderSettings).data('flexslider');
-	$(window).bind('resize', function() { fixHeight(slider) } );
+
+	if ( 'undefined' !== typeof slider ) $(window).bind('resize', function() { fixHeight(slider) } );
 
 });
 		</script>";
