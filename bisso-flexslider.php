@@ -246,7 +246,8 @@ jQuery('document').ready( function($){
 				'animation' => 'fade',
 				'slideshow_speed' => 7000,
 				'animation_speed' => 600,
-				'slideshow' => true
+				'slideshow' => true,
+				'useCSS' => false
 			)
 		);
 	}
@@ -267,10 +268,11 @@ jQuery('document').ready( function($){
 		return $array;
 	}
 
-	function camelize( $string, $pascalCase = false ) {
+	function camelize( $string, $pascal_case = false ) {
 		$string = str_replace( array( '-', '_' ), ' ', $string );
 		$string = ucwords( $string );
 		$string = str_replace( ' ', '', $string );
+		$pascal_case = (boolean) $pascal_case;
 
 		if ( !(boolean) $pascalCase ) {
 			return lcfirst( $string );
