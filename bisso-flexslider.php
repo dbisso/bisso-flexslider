@@ -69,8 +69,8 @@ class Bisso_Flexslider {
 	function action_add_meta_boxes () {
 		$post_types = get_post_types();
 
-		foreach ( $post_types as $name => $post_type ) {
-			if ( in_array( $name, apply_filters( 'bisso_flexslider_post_types', array( 'post', 'page' ) ) ) ) add_meta_box( 'bisso-flexslider-options', __( 'Slideshow Options', 'bisso-flexslider' ), array( __CLASS__, 'meta_box_render' ), null, $context = 'advanced', $priority = 'default', null );
+		if ( in_array( get_post_type(), apply_filters( 'bisso_flexslider_post_types', array( 'post', 'page' ) ) ) ) {
+			add_meta_box( 'bisso-flexslider-options', __( 'Slideshow Options', 'bisso-flexslider' ), array( __CLASS__, 'meta_box_render' ), null, $context = 'advanced', $priority = 'default', null );
 		}
 	}
 
