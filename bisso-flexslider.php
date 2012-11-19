@@ -61,6 +61,9 @@ class Bisso_Flexslider {
 
 	function action_wp_enqueue_scripts() {
 		wp_enqueue_script( 'jquery-flexslider', plugins_url( 'js/FlexSlider/jquery.flexslider-min.js', __FILE__ ), array( 'jquery' ), 2.1, true );
+
+		wp_enqueue_script( 'jquery-flexslider-fixheights', plugins_url( 'js/flexslider-fixheights.js', __FILE__ ), array( 'jquery' ), 2.1, true );
+
 		wp_enqueue_style( 'jquery-flexslider-style', plugins_url( 'js/FlexSlider/flexslider.css', __FILE__ ), null, 2.1 );
 
 		wp_localize_script( 'jquery-flexslider', 'bissoFlexsliderSettings', self::camelize_array_keys( self::get_post_settings() ) );
@@ -194,40 +197,6 @@ class Bisso_Flexslider {
 		$content .= '</ul></div>';
 
 		return do_shortcode( $content );
-	}
-
-	function action_wp_footer ( ) {
-		echo "<script type='text/javascript'>
-jQuery('document').ready( function($){
-
-	var fixHeight = function ( slider ) {
-		var maxHeight = 0,
-			heights = [];
-
-		// Find the max height needed
-		for ( var i = 0; i < slider.slides.length; i++ ) {
-			heights[i] = $(slider.slides[i]).height()
-			maxHeight = Math.max(maxHeight, heights[i]);
-		}
-
-		// Add vertical padding
-		for ( var i = 0; i < slider.slides.length; i++ ) {
-			$(slider.slides[i]).css('padding', (maxHeight - heights[i]) / 2 + 'px 0');
-			maxHeight = Math.max(maxHeight, heights[i]);
-		}
-
-		// Set the height on the viewport
-		slider.find('.slides').height( maxHeight );
-	}
-
-	bissoFlexsliderSettings.flexsliderSettings.start = fixHeight
-
-	var slider = $('.flexslider').flexslider(bissoFlexsliderSettings.flexsliderSettings).data('flexslider');
-
-	if ( 'undefined' !== typeof slider ) $(window).bind('resize', function() { fixHeight(slider) } );
-
-});
-		</script>";
 	}
 
 	function filter_the_content ( $content ) {
