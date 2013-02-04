@@ -37,6 +37,7 @@ class Bisso_Flexslider {
 	static $flexslider_version = '2.2.0';
 	static $plugin_version     = '1.1';
 	static $test_slow_image    = false;
+	static $dev               = false;
 	const OPTION_NAME          = 'bisso_flexslider_options';
 	const META_NAME            = 'bisso_flexslider_options';
 
@@ -54,6 +55,8 @@ class Bisso_Flexslider {
 	 	} catch ( Exception $e ) {
 	 		wp_die( plugin_basename( __FILE__ ) . ' plugin bootstrap error: ' . $e->getMessage(), plugin_basename( __FILE__ ) . ' plugin bootstrap error: ' );
 	 	}
+
+	 	if ( self::$dev ) self::$plugin_version .= '.' . microtime();
 
 		self::$settings = self::wp_parse_args_recursive( get_option( self::OPTION_NAME, array() ), self::get_settings_defaults() );
 		self::$animation_presets = array(
