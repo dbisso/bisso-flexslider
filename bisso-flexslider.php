@@ -64,7 +64,11 @@ class Bisso_Flexslider {
 	function action_wp_enqueue_scripts() {
 		wp_enqueue_script( 'jquery-flexslider', plugins_url( 'js/FlexSlider/jquery.flexslider-min.js', __FILE__ ), array( 'jquery' ), self::$flexslider_version, true );
 
-		wp_enqueue_script( 'jquery-flexslider-fixheights', plugins_url( 'js/flexslider-fixheights.js', __FILE__ ), array( 'jquery' ), self::$flexslider_version, true );
+		wp_enqueue_script( 'jquery-throttle-debounce', plugins_url( 'js/jquery-throttle-debounce.js', __FILE__ ), array( 'jquery' ), '1.1', true );
+
+		wp_enqueue_script( 'jquery-flexslider-fixheights', plugins_url( 'js/flexslider-fixheights.js', __FILE__ ), array( 'jquery', 'jquery-throttle-debounce' ), self::$plugin_version, true );
+
+		wp_enqueue_script( 'jquery-flexslider-init', plugins_url( 'js/flexslider-init.js', __FILE__ ), array( 'jquery' ), self::$plugin_version, true );
 
 		wp_enqueue_style( 'jquery-flexslider-style', plugins_url( 'js/FlexSlider/flexslider.css', __FILE__ ), null, self::$flexslider_version );
 
@@ -193,7 +197,7 @@ class Bisso_Flexslider {
 
 		foreach ( $attachments as $key => $attachment ) {
 			$caption = !empty( $attachment->post_excerpt ) ? "<p $caption_class>{$attachment->post_excerpt}</p>" : '';
-			$content .= "<li $slide_class>" . wp_get_attachment_image( $attachment->ID,  'large', false) . $caption . '</li>';
+			$content .= "<li $slide_class>" . wp_get_attachment_image( $attachment->ID,  'large', false ) . $caption . '</li>';
 		}
 
 		$content .= '</ul></div>';
