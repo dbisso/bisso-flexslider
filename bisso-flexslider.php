@@ -36,6 +36,7 @@ class Bisso_Flexslider {
 	static $animation_presets  = array();
 	static $flexslider_version = '2.2.0';
 	static $plugin_version     = '1.1';
+	static $test_slow_image    = false;
 	const OPTION_NAME          = 'bisso_flexslider_options';
 	const META_NAME            = 'bisso_flexslider_options';
 
@@ -59,6 +60,13 @@ class Bisso_Flexslider {
 			'slide' => __( 'Slide', 'bisso-flexslider' ),
 			'fade'  => __( 'Fade', 'bisso-flexslider' )
 		);
+
+		if ( self::$test_slow_image ) add_filter( 'wp_get_attachment_image_attributes',  array( __CLASS__, 'slow_attachment' ), 10, 99 );
+	}
+
+	public function slow_attachment( $attr, $attachment ) {
+		$attr['src'] = plugins_url( 'test-slow-image.php?img=', __FILE__ ) . $attr['src'];
+		return $attr;
 	}
 
 	function action_wp_enqueue_scripts() {
