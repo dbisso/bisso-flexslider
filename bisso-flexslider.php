@@ -34,6 +34,7 @@ class Bisso_Flexslider {
 	static $_hooker;
 	static $settings = array();
 	static $animation_presets = array();
+	static $flexslider_version = '2.2.0';
 	const OPTION_NAME = 'bisso_flexslider_options';
 	const META_NAME = 'bisso_flexslider_options';
 
@@ -60,11 +61,11 @@ class Bisso_Flexslider {
 	}
 
 	function action_wp_enqueue_scripts() {
-		wp_enqueue_script( 'jquery-flexslider', plugins_url( 'js/FlexSlider/jquery.flexslider-min.js', __FILE__ ), array( 'jquery' ), 2.1, true );
+		wp_enqueue_script( 'jquery-flexslider', plugins_url( 'js/FlexSlider/jquery.flexslider-min.js', __FILE__ ), array( 'jquery' ), self::$flexslider_version, true );
 
-		wp_enqueue_script( 'jquery-flexslider-fixheights', plugins_url( 'js/flexslider-fixheights.js', __FILE__ ), array( 'jquery' ), 2.1, true );
+		wp_enqueue_script( 'jquery-flexslider-fixheights', plugins_url( 'js/flexslider-fixheights.js', __FILE__ ), array( 'jquery' ), self::$flexslider_version, true );
 
-		wp_enqueue_style( 'jquery-flexslider-style', plugins_url( 'js/FlexSlider/flexslider.css', __FILE__ ), null, 2.1 );
+		wp_enqueue_style( 'jquery-flexslider-style', plugins_url( 'js/FlexSlider/flexslider.css', __FILE__ ), null, self::$flexslider_version );
 
 		wp_localize_script( 'jquery-flexslider', 'bissoFlexsliderSettings', self::camelize_array_keys( self::get_post_settings() ) );
 	}
