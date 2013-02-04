@@ -32,11 +32,12 @@ Author URI: http://danisadesigner.com/
 
 class Bisso_Flexslider {
 	static $_hooker;
-	static $settings = array();
-	static $animation_presets = array();
+	static $settings           = array();
+	static $animation_presets  = array();
 	static $flexslider_version = '2.2.0';
-	const OPTION_NAME = 'bisso_flexslider_options';
-	const META_NAME = 'bisso_flexslider_options';
+	static $plugin_version     = '1.1';
+	const OPTION_NAME          = 'bisso_flexslider_options';
+	const META_NAME            = 'bisso_flexslider_options';
 
 	function bootstrap( $hooker = null ) {
 		try {
