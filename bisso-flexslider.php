@@ -166,13 +166,13 @@ class Bisso_Flexslider {
 	 * @return array Post level settings
 	 */
 	function get_post_settings( $post_id = null ) {
-		if ( (int) $post_id ) {
-			$post = get_post( $post_id );
-		} else {
-			global $post;
-		}
+		$post = get_post( $post_id );
 
-		$post_settings  = get_post_meta($post->ID, self::META_NAME, true);
+		if ( !$post )
+			return self::$settings;
+
+		$post_settings  = get_post_meta( $post->ID, self::META_NAME, true );
+
 		return self::wp_parse_args_recursive( $post_settings, self::$settings );
 	}
 
