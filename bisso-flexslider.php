@@ -260,7 +260,7 @@ class Bisso_Flexslider {
 		$string = str_replace( ' ', '', $string );
 		$pascal_case = (boolean) $pascal_case;
 
-		if ( !(boolean) $pascalCase ) {
+		if ( !(boolean) $pascal_case ) {
 			return lcfirst( $string );
 		}
 
@@ -269,7 +269,7 @@ class Bisso_Flexslider {
 
 	function wp_parse_args_recursive() {
 		$arrays = func_get_args();
-        $base = array_pop($arrays);
+        $base = array_pop( $arrays );
 
         foreach ( $arrays as $array ) {
             reset( $base ); //important
