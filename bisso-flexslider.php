@@ -273,13 +273,15 @@ class Bisso_Flexslider {
 
         foreach ( $arrays as $array ) {
             reset( $base ); //important
-            while ( list( $key, $value ) = @each( $array ) ) {
-                if ( is_array( $value ) && @is_array( $base[$key] ) ) {
-                    $base[$key] = self::wp_parse_args_recursive( $value, $base[$key] );
-                } else {
-                    $base[$key] = $value;
-                }
-            }
+            if ( is_array( $array ) ) {
+	            while ( list( $key, $value ) = @each( $array ) ) {
+	                if ( is_array( $value ) && @is_array( $base[$key] ) ) {
+	                    $base[$key] = self::wp_parse_args_recursive( $value, $base[$key] );
+	                } else {
+	                    $base[$key] = $value;
+	                }
+	            }
+	        }
         }
 
         return $base;
