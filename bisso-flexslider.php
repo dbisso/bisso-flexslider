@@ -58,7 +58,15 @@ class Bisso_Flexslider {
 
 	 	if ( self::$dev ) self::$plugin_version .= '.' . microtime();
 
-		self::$settings = self::wp_parse_args_recursive( get_option( self::OPTION_NAME, array() ), self::get_settings_defaults() );
+	 	$stored_options = get_option( self::OPTION_NAME, array() );
+
+	 	if ( ! $stored_options ) {
+	 		add_option( self::OPTION_NAME, array() );
+	 	}
+
+		self::$settings = self::wp_parse_args_recursive( $stored_options, self::get_settings_defaults() );
+
+
 		self::$animation_presets = array(
 			'slide' => __( 'Slide', 'bisso-flexslider' ),
 			'fade'  => __( 'Fade', 'bisso-flexslider' )
