@@ -142,7 +142,7 @@ class Bisso_Flexslider {
 			// return;
 
 		// Check permissions
-		if ( 'page' == $_POST['post_type'] ) {
+		if ( isset( $_POST['post_type'] ) && 'page' == $_POST['post_type'] ) {
 			if ( !current_user_can( 'edit_page', (int) $post_id ) )
 				return;
 		} else {
